@@ -1,0 +1,11 @@
+[submodule "openclaw-mission-control"]
+	path = openclaw-mission-control
+	url = https://github.com/abhi1693/openclaw-mission-control.git
+
+[submodule "openclaw-artifacts"]
+	path = openclaw-artifacts
+	url = https://github.com/miguelalfredooo/openclaw-artifacts.git
+
+[submodule "patched-editorial"]
+	path = patched-editorial
+	url = https://github.com/miguelalfredooo/patched-bulletin-board.git
