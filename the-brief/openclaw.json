@@ -1,0 +1,39 @@
+{
+  "_comment": "The Brief agents are integrated into the main OpenClaw gateway. This file is for reference only.",
+  "gateway": {
+    "mode": "reference",
+    "port": 18789,
+    "note": "Agents are accessed via the main gateway at http://127.0.0.1:18789"
+  },
+  "agents": {
+    "brief-curator": {
+      "name": "The Brief — Curator",
+      "workspace": "/Users/blackmachete/.openclaw/workspace-brief-curator",
+      "role": "Scout and validator. Finds signals and validates content quality.",
+      "access": "http://127.0.0.1:18789/chat?session=agent%3Abrief-curator%3Amain"
+    },
+    "brief-assignment": {
+      "name": "The Brief — Assignment Editor",
+      "workspace": "/Users/blackmachete/.openclaw/workspace-brief-assignment",
+      "role": "Scout. Finds signals and commissions pieces.",
+      "access": "http://127.0.0.1:18789/chat?session=agent%3Abrief-assignment%3Amain"
+    },
+    "brief-managing": {
+      "name": "The Brief — Managing Editor",
+      "workspace": "/Users/blackmachete/.openclaw/workspace-brief-managing",
+      "role": "Maker. Develops ideas into clarity and beauty.",
+      "access": "http://127.0.0.1:18789/chat?session=agent%3Abrief-managing%3Amain"
+    },
+    "brief-editorial": {
+      "name": "The Brief — Editorial Director",
+      "workspace": "/Users/blackmachete/.openclaw/workspace-brief-editorial",
+      "role": "Visionary. Makes publication decisions and guards vision.",
+      "access": "http://127.0.0.1:18789/chat?session=agent%3Abrief-editorial%3Amain"
+    }
+  },
+  "setup": {
+    "main_gateway": "/Users/blackmachete/.openclaw/openclaw.json",
+    "projects_registry": "/Users/blackmachete/.openclaw/projects.json",
+    "documentation": "See README.md, SETUP.md, and IDENTITY.md for full details"
+  }
+}
