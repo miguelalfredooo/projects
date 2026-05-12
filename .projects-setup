@@ -1,0 +1,214 @@
+#!/bin/bash
+# Projects Monorepo Setup & Workflow Guide
+# Location: /Users/blackmachete/projects/.projects-setup
+# Run: source /Users/blackmachete/projects/.projects-setup
+
+# =============================================================================
+# QUICK START
+# =============================================================================
+# Add this to ~/.zshrc or ~/.bashrc:
+#   source /Users/blackmachete/projects/.projects-setup
+#
+# Then use:
+#   bb                  # Jump to bulletin-board
+#   pb                  # Jump to patched-editorial (parent)
+#   projects-status     # Check all repos
+#   projects-update     # Pull latest from all projects
+
+# =============================================================================
+# ALIASES
+# =============================================================================
+
+alias bb='cd /Users/blackmachete/projects/patched-editorial/projects/bulletin-board'
+alias pb='cd /Users/blackmachete/projects/patched-editorial'
+alias projects='cd /Users/blackmachete/projects'
+alias oc-artifacts='cd /Users/blackmachete/projects/openclaw-artifacts'
+alias oc-mission='cd /Users/blackmachete/projects/openclaw-mission-control'
+alias brief='cd /Users/blackmachete/projects/the-brief'
+
+# =============================================================================
+# FUNCTIONS
+# =============================================================================
+
+# Show all projects and their status
+projects-status() {
+  echo "=== Projects Monorepo Status ==="
+  echo ""
+
+  cd /Users/blackmachete/projects
+
+  echo "📍 Main Monorepo:"
+  git status --short
+
+  echo ""
+  echo "📦 Subprojects:"
+  for dir in patched-editorial openclaw-artifacts openclaw-mission-control; do
+    if [ -d "$dir/.git" ]; then
+      echo ""
+      echo "  $dir:"
+      cd "$dir"
+      git status --short || echo "    (not a git repo)"
+      cd ..
+    fi
+  done
+
+  echo ""
+  echo "💡 Tip: Use 'bb' to jump to bulletin-board"
+}
+
+# Pull latest from all projects
+projects-update() {
+  echo "=== Updating all projects ==="
+  cd /Users/blackmachete/projects
+
+  echo "Updating main monorepo..."
+  git pull origin main
+
+  echo ""
+  echo "Updating submodules..."
+  git submodule foreach git pull origin main
+
+  echo ""
+  echo "✅ All projects updated"
+}
+
+# Commit and push from current project
+projects-sync() {
+  local current_dir=$(pwd)
+  local project_root="/Users/blackmachete/projects"
+
+  # Find which project we're in
+  if [[ "$current_dir" == *"patched-editorial"* ]]; then
+    cd "$project_root"
+    echo "Syncing patched-editorial..."
+    git add patched-editorial
+    git commit -m "Update patched-editorial submodule"
+    git push origin main
+    cd "$current_dir"
+  elif [[ "$current_dir" == *"openclaw-artifacts"* ]]; then
+    cd "$project_root"
+    echo "Syncing openclaw-artifacts..."
+    git add openclaw-artifacts
+    git commit -m "Update openclaw-artifacts submodule"
+    git push origin main
+    cd "$current_dir"
+  elif [[ "$current_dir" == *"openclaw-mission-control"* ]]; then
+    cd "$project_root"
+    echo "Syncing openclaw-mission-control..."
+    git add openclaw-mission-control
+    git commit -m "Update openclaw-mission-control submodule"
+    git push origin main
+    cd "$current_dir"
+  else
+    echo "❌ Not in a recognized project directory"
+    echo "Current: $current_dir"
+  fi
+}
+
+# =============================================================================
+# WORKFLOW DOCUMENTATION
+# =============================================================================
+
+projects-help() {
+  cat << 'EOF'
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  PROJECTS MONOREPO WORKFLOW GUIDE                          ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📍 PRIMARY WORKING DIRECTORY
+   /Users/blackmachete/projects/patched-editorial/projects/bulletin-board
+
+🔗 QUICK ALIASES
+   bb              → Jump to bulletin-board
+   pb              → Jump to patched-editorial (parent)
+   projects        → Jump to projects root
+   oc-artifacts    → Jump to openclaw-artifacts
+   oc-mission      → Jump to openclaw-mission-control
+   brief           → Jump to the-brief
+
+📊 STATUS & UPDATES
+   projects-status   → Show status of all projects
+   projects-update   → Pull latest from all submodules
+   projects-sync     → Commit & push current project to monorepo
+
+📦 DIRECTORY STRUCTURE
+   /Users/blackmachete/projects/
+   ├── .gitmodules                         (submodule config)
+   ├── OPENCLAW-WORKSPACE-GUIDE.md         (workspace standards)
+   ├── PROJECTS-MAP.md                     (monorepo structure)
+   │
+   ├── patched-editorial/                  ⭐ PRIMARY PROJECT
+   │   └── projects/bulletin-board/        ⭐ MAIN WORKING DIR
+   │       ├── AGENT-ROLE-INSTRUCTIONS.md
+   │       ├── SKILLS.md
+   │       └── [branches: main, curator-integration]
+   │
+   ├── openclaw-artifacts/                 (workspace reference)
+   ├── openclaw-mission-control/           (gateway infrastructure)
+   └── the-brief/                          (agent briefs)
+
+🔄 TYPICAL WORKFLOW
+
+   1. Start session
+      $ bb                              (jump to bulletin-board)
+      $ git status                      (check current branch)
+
+   2. Work on bulletin-board
+      $ git checkout curator-integration (or your branch)
+      $ [edit files]
+      $ git add -A
+      $ git commit -m "Work description"
+      $ git push origin curator-integration
+
+   3. Update monorepo tracking
+      $ projects-sync                   (from bulletin-board dir)
+      This commits the submodule update to main monorepo
+
+   4. Jump to another project
+      $ oc-artifacts                    (or another alias)
+      $ git status
+      $ [work...]
+
+   5. Back to bulletin-board
+      $ bb
+      $ git status
+
+🚀 SETUP INSTRUCTIONS
+
+   Add to ~/.zshrc or ~/.bashrc:
+   ────────────────────────────────
+   source /Users/blackmachete/projects/.projects-setup
+   ────────────────────────────────
+
+   Then reload: source ~/.zshrc
+
+📚 DOCUMENTATION
+
+   - OPENCLAW-WORKSPACE-GUIDE.md  → Agent workspace standards
+   - PROJECTS-MAP.md              → Monorepo structure & submodule commands
+   - patched-editorial/README.md  → Bulletin-board project details
+
+💡 TIPS
+
+   • Most work happens in: bb (bulletin-board)
+   • Use projects-status to see what's changed
+   • Use projects-update to sync all projects
+   • Each project has its own git repo (can be cloned independently)
+   • Monorepo provides unified view and documentation
+
+❓ HELP
+
+   • projects-help     → Show this message
+   • projects-status   → See current state of all repos
+   • git status        → In any project directory
+
+EOF
+}
+
+# Show help on first load
+echo "✅ Projects setup loaded! Run 'projects-help' for full documentation"
+echo ""
+echo "Quick aliases:"
+echo "  bb              → Jump to bulletin-board (primary)"
+echo "  projects-status → Check all project status"
+echo "  projects-help   → Show full documentation"
